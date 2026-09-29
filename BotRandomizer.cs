@@ -1,8 +1,6 @@
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
@@ -14,7 +12,6 @@ using Microsoft.Extensions.Logging;
 
 namespace BotRandomizer;
 
-[MinimumApiVersion(376)]
 public sealed class BotRandomizerPlugin : BasePlugin
 {
     private readonly CosmeticStateStore _states = new();
@@ -100,14 +97,14 @@ public sealed class BotRandomizerPlugin : BasePlugin
         MemoryFunctionWithReturn<nint, string, float, int>? writer = null;
         try
         {
+            // SetOrAddAttributeValueByName
             writer = new MemoryFunctionWithReturn<nint, string, float, int>(
-                ReadSignature("SetOrAddAttributeValueByName"));
-            if (writer.Handle == nint.Zero)
-                throw new InvalidOperationException("Attribute writer signature did not resolve.");
+                RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                    ? "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 53 48 89 F3 48 83 EC ? F3 0F 11 85"
+                    : "48 89 4C 24 ? 53 41 55 41 56");
         }
         catch (Exception exception)
         {
-            writer = null;
             Logger.LogError(
                 exception,
                 "[BotRandomizer] SetOrAddAttributeValueByName signature failed; economic cosmetics disabled");
@@ -119,31 +116,20 @@ public sealed class BotRandomizerPlugin : BasePlugin
         {
             try
             {
+                // CEconItemViewConstructor
                 itemViewConstructor = new MemoryFunctionWithReturn<nint, nint>(
-                    ReadSignature("CEconItemViewConstructor"));
-                if (itemViewConstructor.Handle == nint.Zero)
-                    throw new InvalidOperationException("Item-view constructor signature did not resolve.");
+                    RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                        ? "55 48 8D 05 ? ? ? ? 66 0F EF C0 48 89 E5 41 57 45 31 FF"
+                        : "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B F9 48 8D 05");
             }
             catch (Exception exception)
             {
-                itemViewConstructor = null;
                 Logger.LogError(
                     exception,
                     "[BotRandomizer] CEconItemView constructor signature failed; weapon cosmetics disabled");
             }
         }
         _weaponItemViews = new WeaponItemViewStore(itemViewConstructor, writer, Logger);
-    }
-
-    private string ReadSignature(string name)
-    {
-        var platform = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "windows"
-            : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux"
-            : throw new PlatformNotSupportedException("BotRandomizer supports Windows and Linux.");
-        using var document = JsonDocument.Parse(
-            File.ReadAllText(Path.Combine(ModuleDirectory, "gamedata", "botrandomizer.json")));
-        return document.RootElement.GetProperty(name).GetProperty(platform).GetString()
-            ?? throw new InvalidDataException($"Missing {platform} signature for {name}.");
     }
 
     private void OnMapStart(string mapName)
