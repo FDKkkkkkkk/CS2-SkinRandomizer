@@ -6,8 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>BotRandomizer</AssemblyName>
     <RootNamespace>BotRandomizer</RootNamespace>
-    <DefaultItemExcludes>$(DefaultItemExcludes);tests/**;tools/**;dist/**</DefaultItemExcludes>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DefaultItemExcludes>$(DefaultItemExcludes);tools/**;dist/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

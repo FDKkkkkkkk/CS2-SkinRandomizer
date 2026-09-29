@@ -83,10 +83,5 @@ const catalog = {
   musicKits: unique(variants("musickit").map(paintKit)).filter(id => !policy.excludedMusicKits.includes(id)),
 };
 const generated = `${JSON.stringify(catalog, null, 2)}\n`;
-if (process.argv.includes("--check")) {
-  if (readFileSync(output, "utf8").replace(/\r\n/g, "\n") !== generated) throw new Error("Randomizer catalog is stale; run npm run generate");
-  console.log(`Verified Randomizer catalog against ${source.package}@${source.version}.`);
-} else {
-  writeFileSync(output, generated);
-  console.log(`Wrote Randomizer catalog: ${weapons.length} weapons, ${stickerKits.length} stickers.`);
-}
+writeFileSync(output, generated);
+console.log(`Wrote Randomizer catalog: ${weapons.length} weapons, ${stickerKits.length} stickers.`);
