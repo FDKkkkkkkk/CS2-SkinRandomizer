@@ -26,7 +26,7 @@ jobs:
         run: npm --prefix tools/catalog run update
       - name: Save changes
         run: |
-          git add BotRandomizer.cs cosmetic_catalog.json tools/catalog/package.json tools/catalog/package-lock.json tools/catalog/source.json
+          git add BotRandomizer.cs cosmetic_catalog.json tools/catalog/package.json tools/catalog/package-lock.json
           if git diff --cached --quiet; then
             echo "Signatures and database are already up to date." >> "$GITHUB_STEP_SUMMARY"
             exit 0
