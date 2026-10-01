@@ -97,6 +97,7 @@ public sealed class BotRandomizerPlugin : BasePlugin
         MemoryFunctionWithReturn<nint, string, float, int>? writer = null;
         try
         {
+            // SetOrAddAttributeValueByName
             writer = new MemoryFunctionWithReturn<nint, string, float, int>(
                 RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                     ? "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 53 48 89 F3 48 83 EC ? F3 0F 11 85"
@@ -115,6 +116,7 @@ public sealed class BotRandomizerPlugin : BasePlugin
         {
             try
             {
+                // CEconItemViewConstructor
                 itemViewConstructor = new MemoryFunctionWithReturn<nint, nint>(
                     RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                         ? "55 48 8D 05 ? ? ? ? 66 0F EF C0 48 89 E5 41 57 45 31 FF"

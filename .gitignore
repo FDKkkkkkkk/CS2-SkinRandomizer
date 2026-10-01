@@ -2,3 +2,5 @@ bin/
 obj/
 .vs/
 *.user
+node_modules/
+dist/
